@@ -29,6 +29,8 @@ int main(int argc,char *argv[])
 	Matrix4 modelMat4;	
 	Model *model5;
 	Matrix4 modelMat5;
+	Model *model6;
+	Matrix4 modelMat6;
 
     for (a = 1; a < argc;a++)
     {
@@ -66,23 +68,11 @@ int main(int argc,char *argv[])
             modelMat2,
             vector3d(10,0,0)
         );
-	gfc_matrix_rotate(
-			modelMat2,
-			modelMat2,
-			1.5,
-			vector3d(1,0,0)
-		);
 	model3 = gf3d_model_load("Rifle");
 	gfc_matrix_identity(modelMat3);
 	gfc_matrix_make_translation(
 		modelMat3,
 		vector3d(-10, 0, 0)
-		);
-	gfc_matrix_rotate(
-		modelMat3,
-		modelMat3,
-		1.5,
-		vector3d(1, 0, 0)
 		);
 	model4 = gf3d_model_load("Unscoped_Sniper");
 	gfc_matrix_identity(modelMat4);
@@ -90,24 +80,24 @@ int main(int argc,char *argv[])
 		modelMat4,
 		vector3d(20, 0, 0)
 		);
-	gfc_matrix_rotate(
-		modelMat4,
-		modelMat4,
-		1.5,
-		vector3d(1, 0, 0)
-		);
 	model5 = gf3d_model_load("Saber");
 	gfc_matrix_identity(modelMat5);
 	gfc_matrix_make_translation(
 		modelMat5,
 		vector3d(0, 10, 0)
 		);
-	gfc_matrix_rotate(
-		modelMat4,
-		modelMat4,
-		1.5,
-		vector3d(0, 1, 0)
+	model6 = gf3d_model_load("floor");
+	gfc_matrix_identity(modelMat6);
+	gfc_matrix_make_translation(
+		modelMat6,
+		vector3d(0, 15, 0)
 		);
+	/*gfc_matrix_rotate(
+		modelMat6,
+		modelMat6,
+		1.5,
+		vector3d(0, 0, 0)
+		);*/
     while(!done)
     {
         SDL_PumpEvents();   // update SDL's internal event structures
@@ -141,23 +131,120 @@ int main(int argc,char *argv[])
             
         gf3d_vgraphics_render_end(bufferFrame);
 
-		// move the camera and the player
+		// move all other objects in the world to make it look like the player is moving
+		float speed = 1;
 		if (keys[SDL_SCANCODE_W])
 		{
-			gf3d_camera_move(vector3d(0,10,0));
+			gf3d_camera_move(vector3d(0, speed, 0));
+			gfc_matrix_translate(
+				modelMat,
+				vector3d(0, speed, 0)
+				);
+			gfc_matrix_translate(
+				modelMat2,
+				vector3d(0, speed, 0)
+				);
+			gfc_matrix_translate(
+				modelMat3,
+				vector3d(0, speed, 0)
+				);
+			gfc_matrix_translate(
+				modelMat4,
+				vector3d(0, speed, 0)
+				);
+			gfc_matrix_translate(
+				modelMat5,
+				vector3d(0, speed, 0)
+				);
+			gfc_matrix_translate(
+				modelMat6,
+				vector3d(0, speed, 0)
+				);
 		}
 
 		if (keys[SDL_SCANCODE_A])
 		{
-			gf3d_camera_move(vector3d(10, 0, 0));
+			gf3d_camera_move(vector3d(speed, 0, 0)); 
+			gfc_matrix_translate(
+				modelMat,
+				vector3d(-speed, 0, 0)
+				);
+			gfc_matrix_translate(
+				modelMat2,
+				vector3d(-speed, 0, 0)
+				);
+			gfc_matrix_translate(
+				modelMat3,
+				vector3d(-speed, 0, 0)
+				);
+			gfc_matrix_translate(
+				modelMat4,
+				vector3d(-speed, 0, 0)
+				);
+			gfc_matrix_translate(
+				modelMat5,
+				vector3d(-speed, 0, 0)
+				);
+			gfc_matrix_translate(
+				modelMat6,
+				vector3d(-speed, 0, 0)
+				);
 		}
 		if (keys[SDL_SCANCODE_S])
 		{
-			gf3d_camera_move(vector3d(0, -10, 0));
+			gf3d_camera_move(vector3d(0, -speed, 0));
+			gfc_matrix_translate(
+				modelMat,
+				vector3d(0, -speed, 0)
+				);
+			gfc_matrix_translate(
+				modelMat2,
+				vector3d(0, -speed, 0)
+				);
+			gfc_matrix_translate(
+				modelMat3,
+				vector3d(0, -speed, 0)
+				);
+			gfc_matrix_translate(
+				modelMat4,
+				vector3d(0, -speed, 0)
+				);
+			gfc_matrix_translate(
+				modelMat5,
+				vector3d(0, -speed, 0)
+				);
+			gfc_matrix_translate(
+				modelMat6,
+				vector3d(0, -speed, 0)
+				);
 		}
 		if (keys[SDL_SCANCODE_D])
 		{
-			gf3d_camera_move(vector3d(-10, 0, 0));
+			gf3d_camera_move(vector3d(-speed, 0, 0));
+			gfc_matrix_translate(
+				modelMat,
+				vector3d(speed, 0, 0)
+				);
+			gfc_matrix_translate(
+				modelMat2,
+				vector3d(speed, 0, 0)
+				);
+			gfc_matrix_translate(
+				modelMat3,
+				vector3d(speed, 0, 0)
+				);
+			gfc_matrix_translate(
+				modelMat4,
+				vector3d(speed, 0, 0)
+				);
+			gfc_matrix_translate(
+				modelMat5,
+				vector3d(speed, 0, 0)
+				);
+			gfc_matrix_translate(
+				modelMat6,
+				vector3d(speed, 0, 0)
+				);
 		}
 
         if (keys[SDL_SCANCODE_ESCAPE])done = 1; // exit condition
