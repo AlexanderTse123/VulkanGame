@@ -53,8 +53,8 @@ int main(int argc,char *argv[])
     
     // main game loop
     slog("gf3d main loop begin");
-	//create the weapons then have them rotated. These are the rotations needed so the handle is pointing downward.
-    model = gf3d_model_load("Saber");
+	//create all the weapons
+	model = gf3d_model_load("Saber");
     gfc_matrix_identity(modelMat);
 	gfc_matrix_rotate(
 		modelMat,
@@ -72,7 +72,13 @@ int main(int argc,char *argv[])
 	gfc_matrix_identity(modelMat3);
 	gfc_matrix_make_translation(
 		modelMat3,
-		vector3d(-10, 0, 0)
+		vector3d(0, 35, 0)
+		);
+	gfc_matrix_rotate(
+		modelMat3,
+		modelMat3,
+		3,
+		vector3d(0, 0, 1)
 		);
 	model4 = gf3d_model_load("Unscoped_Sniper");
 	gfc_matrix_identity(modelMat4);
@@ -80,17 +86,17 @@ int main(int argc,char *argv[])
 		modelMat4,
 		vector3d(20, 0, 0)
 		);
-	model5 = gf3d_model_load("Saber");
-	gfc_matrix_identity(modelMat5);
+	model = gf3d_model_load("Platform");
+	gfc_matrix_identity(modelMat);
 	gfc_matrix_make_translation(
-		modelMat5,
-		vector3d(0, 10, 0)
+		modelMat,
+		vector3d(0, 0, 0)
 		);
-	model6 = gf3d_model_load("floor");
-	gfc_matrix_identity(modelMat6);
-	gfc_matrix_make_translation(
-		modelMat6,
-		vector3d(0, 15, 0)
+	gfc_matrix_rotate(
+		modelMat,
+		modelMat,
+		3,
+		vector3d(0, 0, 1)
 		);
 	/*gfc_matrix_rotate(
 		modelMat6,
@@ -122,10 +128,12 @@ int main(int argc,char *argv[])
         gf3d_pipeline_reset_frame(gf3d_vgraphics_get_graphics_pipeline(),bufferFrame);
             commandBuffer = gf3d_command_rendering_begin(bufferFrame);
 
-                gf3d_model_draw(model,bufferFrame,commandBuffer,modelMat);
-                gf3d_model_draw(model2,bufferFrame,commandBuffer,modelMat2);
+                gf3d_model_draw(model, bufferFrame,commandBuffer, modelMat);
+                gf3d_model_draw(model2, bufferFrame,commandBuffer, modelMat2);
 				gf3d_model_draw(model3, bufferFrame, commandBuffer, modelMat3);
 				gf3d_model_draw(model4, bufferFrame, commandBuffer, modelMat4);
+				gf3d_model_draw(model5, bufferFrame, commandBuffer, modelMat5);
+				gf3d_model_draw(model6, bufferFrame, commandBuffer, modelMat6);
                 
             gf3d_command_rendering_end(commandBuffer);
             
@@ -142,10 +150,6 @@ int main(int argc,char *argv[])
 				);
 			gfc_matrix_translate(
 				modelMat2,
-				vector3d(0, speed, 0)
-				);
-			gfc_matrix_translate(
-				modelMat3,
 				vector3d(0, speed, 0)
 				);
 			gfc_matrix_translate(
@@ -174,10 +178,6 @@ int main(int argc,char *argv[])
 				vector3d(-speed, 0, 0)
 				);
 			gfc_matrix_translate(
-				modelMat3,
-				vector3d(-speed, 0, 0)
-				);
-			gfc_matrix_translate(
 				modelMat4,
 				vector3d(-speed, 0, 0)
 				);
@@ -202,10 +202,6 @@ int main(int argc,char *argv[])
 				vector3d(0, -speed, 0)
 				);
 			gfc_matrix_translate(
-				modelMat3,
-				vector3d(0, -speed, 0)
-				);
-			gfc_matrix_translate(
 				modelMat4,
 				vector3d(0, -speed, 0)
 				);
@@ -227,10 +223,6 @@ int main(int argc,char *argv[])
 				);
 			gfc_matrix_translate(
 				modelMat2,
-				vector3d(speed, 0, 0)
-				);
-			gfc_matrix_translate(
-				modelMat3,
 				vector3d(speed, 0, 0)
 				);
 			gfc_matrix_translate(
