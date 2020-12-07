@@ -663,6 +663,16 @@ void gf3d_vgraphics_rotate_camera(float degrees)
 
 }
 
+void gf3d_vgraphics_rotate_camera_vertical(float degrees)
+{
+	gfc_matrix_rotate(
+		gf3d_vgraphics.ubo.view,
+		gf3d_vgraphics.ubo.view,
+		degrees,
+		vector3d(1,0,0));
+
+}
+
 Pipeline *gf3d_vgraphics_get_graphics_pipeline()
 {
     return gf3d_vgraphics.pipe;

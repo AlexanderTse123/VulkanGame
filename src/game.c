@@ -26,11 +26,7 @@ int main(int argc,char *argv[])
 	Model *model3;
 	Matrix4 modelMat3;
 	Model *model4;
-	Matrix4 modelMat4;	
-	Model *model5;
-	Matrix4 modelMat5;
-	Model *model6;
-	Matrix4 modelMat6;
+	Matrix4 modelMat4;
 
     for (a = 1; a < argc;a++)
     {
@@ -54,13 +50,11 @@ int main(int argc,char *argv[])
     // main game loop
     slog("gf3d main loop begin");
 	//create all the weapons
-	model = gf3d_model_load("Saber");
-    gfc_matrix_identity(modelMat);
-	gfc_matrix_rotate(
+	model = gf3d_model_load("Platform");
+	gfc_matrix_identity(modelMat);
+	gfc_matrix_make_translation(
 		modelMat,
-		modelMat,
-		1.5,
-		vector3d(1, 0, 0)
+		vector3d(0, 0, 0)
 		);
     model2 = gf3d_model_load("Pistol");
     gfc_matrix_identity(modelMat2);
@@ -74,36 +68,13 @@ int main(int argc,char *argv[])
 		modelMat3,
 		vector3d(0, 35, 0)
 		);
-	gfc_matrix_rotate(
-		modelMat3,
-		modelMat3,
-		3,
-		vector3d(0, 0, 1)
-		);
+
 	model4 = gf3d_model_load("Unscoped_Sniper");
 	gfc_matrix_identity(modelMat4);
 	gfc_matrix_make_translation(
 		modelMat4,
 		vector3d(20, 0, 0)
 		);
-	model = gf3d_model_load("Platform");
-	gfc_matrix_identity(modelMat);
-	gfc_matrix_make_translation(
-		modelMat,
-		vector3d(0, 0, 0)
-		);
-	gfc_matrix_rotate(
-		modelMat,
-		modelMat,
-		3,
-		vector3d(0, 0, 1)
-		);
-	/*gfc_matrix_rotate(
-		modelMat6,
-		modelMat6,
-		1.5,
-		vector3d(0, 0, 0)
-		);*/
     while(!done)
     {
         SDL_PumpEvents();   // update SDL's internal event structures
@@ -111,6 +82,7 @@ int main(int argc,char *argv[])
         //update game things here
         
         //gf3d_vgraphics_rotate_camera(0.001);
+		//gf3d_vgraphics_rotate_camera_vertical(0.001);
         /*gfc_matrix_rotate(
             modelMat,
             modelMat,
@@ -128,12 +100,10 @@ int main(int argc,char *argv[])
         gf3d_pipeline_reset_frame(gf3d_vgraphics_get_graphics_pipeline(),bufferFrame);
             commandBuffer = gf3d_command_rendering_begin(bufferFrame);
 
-                gf3d_model_draw(model, bufferFrame,commandBuffer, modelMat);
-                gf3d_model_draw(model2, bufferFrame,commandBuffer, modelMat2);
+                gf3d_model_draw(model, bufferFrame, commandBuffer, modelMat);
+                gf3d_model_draw(model2, bufferFrame, commandBuffer, modelMat2);
 				gf3d_model_draw(model3, bufferFrame, commandBuffer, modelMat3);
 				gf3d_model_draw(model4, bufferFrame, commandBuffer, modelMat4);
-				gf3d_model_draw(model5, bufferFrame, commandBuffer, modelMat5);
-				gf3d_model_draw(model6, bufferFrame, commandBuffer, modelMat6);
                 
             gf3d_command_rendering_end(commandBuffer);
             
@@ -143,7 +113,7 @@ int main(int argc,char *argv[])
 		float speed = 1;
 		if (keys[SDL_SCANCODE_W])
 		{
-			gf3d_camera_move(vector3d(0, speed, 0));
+			//gf3d_camera_move(vector3d(0, speed, 0));
 			gfc_matrix_translate(
 				modelMat,
 				vector3d(0, speed, 0)
@@ -154,21 +124,13 @@ int main(int argc,char *argv[])
 				);
 			gfc_matrix_translate(
 				modelMat4,
-				vector3d(0, speed, 0)
-				);
-			gfc_matrix_translate(
-				modelMat5,
-				vector3d(0, speed, 0)
-				);
-			gfc_matrix_translate(
-				modelMat6,
 				vector3d(0, speed, 0)
 				);
 		}
 
 		if (keys[SDL_SCANCODE_A])
 		{
-			gf3d_camera_move(vector3d(speed, 0, 0)); 
+			//gf3d_camera_move(vector3d(speed, 0, 0)); 
 			gfc_matrix_translate(
 				modelMat,
 				vector3d(-speed, 0, 0)
@@ -179,20 +141,12 @@ int main(int argc,char *argv[])
 				);
 			gfc_matrix_translate(
 				modelMat4,
-				vector3d(-speed, 0, 0)
-				);
-			gfc_matrix_translate(
-				modelMat5,
-				vector3d(-speed, 0, 0)
-				);
-			gfc_matrix_translate(
-				modelMat6,
 				vector3d(-speed, 0, 0)
 				);
 		}
 		if (keys[SDL_SCANCODE_S])
 		{
-			gf3d_camera_move(vector3d(0, -speed, 0));
+			//gf3d_camera_move(vector3d(0, -speed, 0));
 			gfc_matrix_translate(
 				modelMat,
 				vector3d(0, -speed, 0)
@@ -203,20 +157,12 @@ int main(int argc,char *argv[])
 				);
 			gfc_matrix_translate(
 				modelMat4,
-				vector3d(0, -speed, 0)
-				);
-			gfc_matrix_translate(
-				modelMat5,
-				vector3d(0, -speed, 0)
-				);
-			gfc_matrix_translate(
-				modelMat6,
 				vector3d(0, -speed, 0)
 				);
 		}
 		if (keys[SDL_SCANCODE_D])
 		{
-			gf3d_camera_move(vector3d(-speed, 0, 0));
+			//gf3d_camera_move(vector3d(-speed, 0, 0));
 			gfc_matrix_translate(
 				modelMat,
 				vector3d(speed, 0, 0)
@@ -227,14 +173,6 @@ int main(int argc,char *argv[])
 				);
 			gfc_matrix_translate(
 				modelMat4,
-				vector3d(speed, 0, 0)
-				);
-			gfc_matrix_translate(
-				modelMat5,
-				vector3d(speed, 0, 0)
-				);
-			gfc_matrix_translate(
-				modelMat6,
 				vector3d(speed, 0, 0)
 				);
 		}
