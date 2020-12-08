@@ -13,6 +13,15 @@
 
 int main(int argc,char *argv[])
 {
+	//mouse position
+	int xPos;
+	int yPos;
+
+	//variables for weapons
+	int weaponid = 2;
+	int charge = 0;
+	int weaponstate = 0;
+
     int done = 0;
     int a;
     Uint8 validate = 1;
@@ -56,19 +65,18 @@ int main(int argc,char *argv[])
 		modelMat,
 		vector3d(0, 0, 0)
 		);
-    model2 = gf3d_model_load("Pistol");
+    model2 = gf3d_model_load("Rifle");
     gfc_matrix_identity(modelMat2);
     gfc_matrix_make_translation(
             modelMat2,
-            vector3d(10,0,0)
+            vector3d(0,35,0)
         );
-	model3 = gf3d_model_load("Rifle");
+	model3 = gf3d_model_load("Pistol");
 	gfc_matrix_identity(modelMat3);
 	gfc_matrix_make_translation(
 		modelMat3,
-		vector3d(0, 35, 0)
+		vector3d(0, 0, 0)
 		);
-
 	model4 = gf3d_model_load("Unscoped_Sniper");
 	gfc_matrix_identity(modelMat4);
 	gfc_matrix_make_translation(
@@ -79,8 +87,93 @@ int main(int argc,char *argv[])
     {
         SDL_PumpEvents();   // update SDL's internal event structures
         keys = SDL_GetKeyboardState(NULL); // get the keyboard state for this frame
-        //update game things here
-        
+
+		//Change weapon
+		if (keys[SDL_SCANCODE_1])
+		{
+			model2 = gf3d_model_load("Unscoped_Sniper");
+			gfc_matrix_identity(modelMat2);
+			gfc_matrix_make_translation(
+				modelMat2,
+				vector3d(0, 35, 0)
+				);
+			weaponid = 1;
+		}
+		if (keys[SDL_SCANCODE_2])
+		{
+			model2 = gf3d_model_load("Rifle");
+			gfc_matrix_identity(modelMat2);
+			gfc_matrix_make_translation(
+				modelMat2,
+				vector3d(0, 35, 0)
+				);
+			weaponid = 2;
+		}
+		if (keys[SDL_SCANCODE_3])
+		{
+			model2 = gf3d_model_load("Pistol");
+			gfc_matrix_identity(modelMat2);
+			gfc_matrix_make_translation(
+				modelMat2,
+				vector3d(0, 35, 0)
+				);
+			weaponid = 3;
+		}
+
+		//left click to shoot
+		//Sniper has a charge mechanic
+		if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT) & weaponid == 1)
+		{
+			charge++;
+			slog("charging");
+		}
+		else if (!(SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT)) & charge < 50 & charge > 0 & weaponid == 1)
+		{
+			charge = 0;
+			slog("partial charged shot");
+		}
+		else if (!(SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT)) & charge >= 50 & charge > 0 & weaponid == 1)
+		{
+			charge = 0;
+			slog("fully charged shot");
+		}
+		//Rifle has automatic fire
+		if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT) & weaponid == 2)
+		{
+			slog("shoot rifle");
+		}
+		//Pistol is semiautomatic
+		if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT) & weaponid == 3 & weaponstate == 0)
+		{
+			weaponstate = 1;
+			slog("shoot pistol");
+		}
+		else if (!(SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT)) & weaponid == 3 & weaponstate == 1)
+		{
+			weaponstate = 0;
+		}
+
+		/*xPos = GET_X_LPARAM();
+		yPos = GET_Y_LPARAM();*/
+
+		if (keys[SDL_SCANCODE_LEFT])
+		{
+			gf3d_vgraphics_rotate_camera(0.01);
+		}
+		if (keys[SDL_SCANCODE_RIGHT])
+		{
+			gf3d_vgraphics_rotate_camera(-0.01);
+		}
+		if (keys[SDL_SCANCODE_UP])
+		{
+			gf3d_vgraphics_rotate_camera_vertical(0.0001);
+		}
+		if (keys[SDL_SCANCODE_DOWN])
+		{
+			gf3d_vgraphics_rotate_camera_vertical(-0.0001);
+		}
+
+		//update game things here
         //gf3d_vgraphics_rotate_camera(0.001);
 		//gf3d_vgraphics_rotate_camera_vertical(0.001);
         /*gfc_matrix_rotate(
@@ -119,7 +212,7 @@ int main(int argc,char *argv[])
 				vector3d(0, speed, 0)
 				);
 			gfc_matrix_translate(
-				modelMat2,
+				modelMat3,
 				vector3d(0, speed, 0)
 				);
 			gfc_matrix_translate(
@@ -136,7 +229,7 @@ int main(int argc,char *argv[])
 				vector3d(-speed, 0, 0)
 				);
 			gfc_matrix_translate(
-				modelMat2,
+				modelMat3,
 				vector3d(-speed, 0, 0)
 				);
 			gfc_matrix_translate(
@@ -152,7 +245,7 @@ int main(int argc,char *argv[])
 				vector3d(0, -speed, 0)
 				);
 			gfc_matrix_translate(
-				modelMat2,
+				modelMat3,
 				vector3d(0, -speed, 0)
 				);
 			gfc_matrix_translate(
@@ -168,7 +261,7 @@ int main(int argc,char *argv[])
 				vector3d(speed, 0, 0)
 				);
 			gfc_matrix_translate(
-				modelMat2,
+				modelMat3,
 				vector3d(speed, 0, 0)
 				);
 			gfc_matrix_translate(
