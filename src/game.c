@@ -127,12 +127,12 @@ int main(int argc,char *argv[])
 			charge++;
 			slog("charging");
 		}
-		else if (!(SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT)) & charge < 50 & charge > 0 & weaponid == 1)
+		else if (!(SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT)) & charge < 100 & charge > 0 & weaponid == 1)
 		{
 			charge = 0;
 			slog("partial charged shot");
 		}
-		else if (!(SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT)) & charge >= 50 & charge > 0 & weaponid == 1)
+		else if (!(SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT)) & charge >= 100 & charge > 0 & weaponid == 1)
 		{
 			charge = 0;
 			slog("fully charged shot");
