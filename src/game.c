@@ -13,10 +13,6 @@
 
 int main(int argc,char *argv[])
 {
-	//mouse position
-	int xPos;
-	int yPos;
-
 	//variables for weapons
 	int weaponid = 2;
 	int charge = 0;
@@ -55,16 +51,33 @@ int main(int argc,char *argv[])
         0,                      //fullscreen
         validate                //validation
     );
-    
+
+
+
     // main game loop
     slog("gf3d main loop begin");
-	//create all the weapons
+	
+	//initialize audio
+	SDL_Init(SDL_INIT_AUDIO);
+	//load file
+	SDL_AudioSpec soundSpec;
+	Uint32 soundLength;
+	Uint8 *soundBuffer;
+	SDL_LoadWAV("sound/InkMeUp.wav", &soundSpec, &soundBuffer, &soundLength);
+	//open audio device
+	SDL_AudioDeviceID deviceID = SDL_OpenAudioDevice(NULL, 0, &soundSpec, NULL, 0);
+		//play audio
+		int success = SDL_QueueAudio(deviceID, soundBuffer, soundLength);
+		SDL_PauseAudioDevice(deviceID, 0);
+
+	//create the room itself
 	model = gf3d_model_load("Platform");
 	gfc_matrix_identity(modelMat);
 	gfc_matrix_make_translation(
 		modelMat,
 		vector3d(0, 0, 0)
 		);
+	//create all the weapons
     model2 = gf3d_model_load("Rifle");
     gfc_matrix_identity(modelMat2);
     gfc_matrix_make_translation(
@@ -83,10 +96,20 @@ int main(int argc,char *argv[])
 		modelMat4,
 		vector3d(20, 0, 0)
 		);
-    while(!done)
-    {
-        SDL_PumpEvents();   // update SDL's internal event structures
-        keys = SDL_GetKeyboardState(NULL); // get the keyboard state for this frame
+	while (!done)
+	{
+		SDL_PumpEvents();   // update SDL's internal event structures
+		keys = SDL_GetKeyboardState(NULL); // get the keyboard state for this frame
+
+		//mute audio
+		if (keys[SDL_SCANCODE_F])
+		{
+			SDL_PauseAudioDevice(deviceID, 1);
+		}
+		else if (keys[SDL_SCANCODE_G])
+		{
+			SDL_PauseAudioDevice(deviceID, 0);
+		}
 
 		//Change weapon
 		if (keys[SDL_SCANCODE_1])
@@ -122,18 +145,26 @@ int main(int argc,char *argv[])
 
 		//left click to shoot
 		//Sniper has a charge mechanic
-		if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT) & weaponid == 1)
+		if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT) & weaponid == 1 & charge < 100 & weaponstate != 2)
 		{
+			weaponstate = 1;
 			charge++;
 			slog("charging");
 		}
+		else if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT) & charge >= 100 & charge > 0 & weaponid == 1 & weaponstate == 1)
+		{
+			weaponstate = 2;
+			slog("fully charged");
+		}
 		else if (!(SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT)) & charge < 100 & charge > 0 & weaponid == 1)
 		{
+			weaponstate = 0;
 			charge = 0;
 			slog("partial charged shot");
 		}
-		else if (!(SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT)) & charge >= 100 & charge > 0 & weaponid == 1)
+		else if (!(SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT)) & charge >= 100 & weaponid == 1)
 		{
+			weaponstate = 0;
 			charge = 0;
 			slog("fully charged shot");
 		}
@@ -148,14 +179,12 @@ int main(int argc,char *argv[])
 			weaponstate = 1;
 			slog("shoot pistol");
 		}
-		else if (!(SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT)) & weaponid == 3 & weaponstate == 1)
+		else if (!(SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT)) & weaponid == 3)
 		{
 			weaponstate = 0;
 		}
 
-		/*xPos = GET_X_LPARAM();
-		yPos = GET_Y_LPARAM();*/
-
+		//use the arrow keys to rotate the camera
 		if (keys[SDL_SCANCODE_LEFT])
 		{
 			gf3d_vgraphics_rotate_camera(0.01);
@@ -166,16 +195,15 @@ int main(int argc,char *argv[])
 		}
 		if (keys[SDL_SCANCODE_UP])
 		{
-			gf3d_vgraphics_rotate_camera_vertical(0.0001);
+			gf3d_vgraphics_rotate_camera_vertical(0.00001);
 		}
 		if (keys[SDL_SCANCODE_DOWN])
 		{
-			gf3d_vgraphics_rotate_camera_vertical(-0.0001);
+			gf3d_vgraphics_rotate_camera_vertical(-0.00001);
 		}
 
 		//update game things here
         //gf3d_vgraphics_rotate_camera(0.001);
-		//gf3d_vgraphics_rotate_camera_vertical(0.001);
         /*gfc_matrix_rotate(
             modelMat,
             modelMat,
